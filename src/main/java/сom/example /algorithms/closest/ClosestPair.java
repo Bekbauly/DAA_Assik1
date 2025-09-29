@@ -3,6 +3,7 @@ package сom.example.algorithms.closest;
 import сom.example.algorithms.util.MetricsTracker;
 
 import java.util.Arrays;
+s by x-coordinate, recursively splits, and checks a strip with y-order and 7-8 neighbor scan.
 
 public class ClosestPair {
 
@@ -26,8 +27,8 @@ public class ClosestPair {
         }
         tracker.start();
         Point[] pointsByX = points.clone();
-        tracker.incrementAllocation(); // For cloning array
-        Arrays.sort(pointsByX); // Sort by x
+        tracker.incrementAllocation(); 
+        Arrays.sort(pointsByX);
         double minDistance = findClosestPairRecursive(pointsByX, 0, pointsByX.length - 1, tracker);
         tracker.stop();
         return minDistance;
@@ -47,8 +48,6 @@ public class ClosestPair {
             double dRight = findClosestPairRecursive(pts, mid + 1, right, tracker);
             double d = Math.min(dLeft, dRight);
 
-
-            // Build strip
             tracker.incrementAllocation();
             Point[] strip = new Point[n];
             int stripSize = 0;
@@ -66,10 +65,9 @@ public class ClosestPair {
                     }
                 }
             }
-            tracker.incrementAllocation();
+            tracker.incrementAllocation(); // For strip array
             Arrays.sort(strip, 0, stripSize, (a, b) -> Double.compare(a.y, b.y));
 
-            // 7-8 neighbor scan
             for (int i = 0; i < stripSize; i++) {
                 for (int j = i + 1; j < stripSize && (j - i) < 8 && (strip[j].y - strip[i].y) < d; j++) {
                     double distance = distance(strip[i], strip[j], tracker);
@@ -84,8 +82,6 @@ public class ClosestPair {
         }
     }
 
-
-
     private double bruteForce(Point[] points, int low, int high, MetricsTracker tracker) {
         double minDistance = Double.POSITIVE_INFINITY;
         for (int i = low; i <= high; i++) {
@@ -99,7 +95,6 @@ public class ClosestPair {
             }
         }
         return minDistance == Double.POSITIVE_INFINITY ? 0.0 : minDistance; 
-    }
 
     private double distance(Point p1, Point p2, MetricsTracker tracker) {
         tracker.incrementComparison();
